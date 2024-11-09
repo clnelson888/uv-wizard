@@ -1,13 +1,13 @@
 {
-  "name": "com.vrchat.demo-template",
-  "displayName": "VRChat Example Package",
+  "name": "com.clnelson888.uv-wizard",
+  "displayName": "UV Wizard",
   "version": "0.0.6",
-  "unity": "2019.4",
-  "description": "Simple Package for testing Automation",
-  "vrchatVersion": "2022.1.1",
+  "unity": "2022.3.22f1",
+  "description": "Enhances UV packing by adjusting textures to match optimized UV island layouts.",
+  "vrchatVersion": "2022.3.22f1",
   "author": {
-    "name": "Momo the Monster",
-    "email": "momodmonster@gmail.com",
-    "url": "https://mmmlabs.com"
+    "name": "clnelson888",
+    "email": "clnelson888@gmail.com",
+    "url": "https://github.com/clnelson888"
   }
 }
