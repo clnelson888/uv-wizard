@@ -1,24 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// UVWizard is a utility class for combining multiple materials into a single texture atlas
+/// and adjusting the UVs of the _mesh to map correctly to the atlas.
+/// </summary>
 public class UVWizard : MonoBehaviour
 {
+    /// <summary>
+    /// The size of the combined texture atlas.
+    /// </summary>
     public int textureAtlasSize = 2048;
 
-    private Mesh mesh;
-    private MeshRenderer meshRenderer;
-    private Material[] originalMaterials;
-    private Rect[] uvRects;
-    private Texture2D textureAtlas;
-    private Material newMaterial;
+    private Mesh _mesh;
+    private MeshRenderer _meshRenderer;
+    private Material[] _originalMaterials;
+    private Rect[] _uvRects;
+    private Texture2D _textureAtlas;
+    private Material _newMaterial;
 
+    private void Start()
+    {
+        CombineMaterials();
+    }
+
+    /// <summary>
+    /// Main method to execute the combination process.
+    /// </summary>
     public void CombineMaterials()
     {
         GetMeshAndMaterials();
 
-        if (mesh == null || originalMaterials == null)
+        if (_mesh == null || _originalMaterials == null)
         {
-            Debug.LogError("Failed to get mesh or materials.");
+            Debug.LogError("Failed to get _mesh or materials.");
             return;
         }
 
@@ -30,33 +45,39 @@ public class UVWizard : MonoBehaviour
         Debug.Log("Materials combined successfully!");
     }
 
+    /// <summary>
+    /// Retrieves and duplicates the _mesh and materials.
+    /// </summary>
     private void GetMeshAndMaterials()
     {
         MeshFilter meshFilter = GetComponent<MeshFilter>();
-        meshRenderer = GetComponent<MeshRenderer>();
+        _meshRenderer = GetComponent<MeshRenderer>();
 
-        if (meshFilter == null || meshRenderer == null)
+        if (meshFilter == null || _meshRenderer == null)
         {
             Debug.LogError("UVWizard requires a MeshFilter and MeshRenderer.");
             return;
         }
 
-        // Duplicate the mesh to avoid modifying the original asset
-        mesh = Instantiate(meshFilter.sharedMesh);
-        meshFilter.mesh = mesh;
+        // Duplicate the _mesh to avoid modifying the original asset
+        _mesh = Instantiate(meshFilter.sharedMesh);
+        meshFilter.mesh = _mesh;
 
-        originalMaterials = meshRenderer.sharedMaterials;
+        _originalMaterials = _meshRenderer.sharedMaterials;
     }
 
+    /// <summary>
+    /// Packs the textures into a texture atlas.
+    /// </summary>
     private void CreateTextureAtlas()
     {
-        int count = originalMaterials.Length;
+        int count = _originalMaterials.Length;
         Texture2D[] textures = new Texture2D[count];
 
         // Collect textures from materials
         for (int i = 0; i < count; i++)
         {
-            Texture2D tex = (Texture2D)originalMaterials[i].mainTexture;
+            Texture2D tex = (Texture2D)_originalMaterials[i].mainTexture;
 
             if (tex == null)
             {
@@ -74,18 +95,21 @@ public class UVWizard : MonoBehaviour
         }
 
         // Create the atlas
-        textureAtlas = new Texture2D(textureAtlasSize, textureAtlasSize);
-        uvRects = textureAtlas.PackTextures(textures, 0, textureAtlasSize);
+        _textureAtlas = new Texture2D(textureAtlasSize, textureAtlasSize);
+        _uvRects = _textureAtlas.PackTextures(textures, 0, textureAtlasSize);
     }
 
+    /// <summary>
+    /// Adjusts the UVs to map correctly to the texture atlas.
+    /// </summary>
     private void RepackUVs()
     {
-        Vector2[] uvs = mesh.uv;
+        Vector2[] uvs = _mesh.uv;
 
-        for (int i = 0; i < mesh.subMeshCount; i++)
+        for (int i = 0; i < _mesh.subMeshCount; i++)
         {
-            int[] triangles = mesh.GetTriangles(i);
-            Rect rect = uvRects[i];
+            int[] triangles = _mesh.GetTriangles(i);
+            Rect rect = _uvRects[i];
 
             foreach (int index in triangles)
             {
@@ -101,20 +125,30 @@ public class UVWizard : MonoBehaviour
             }
         }
 
-        mesh.uv = uvs;
+        _mesh.uv = uvs;
     }
 
+    /// <summary>
+    /// Creates a new material with the combined texture.
+    /// </summary>
     private void CreateNewMaterial()
     {
-        newMaterial = new Material(Shader.Find("Standard"));
-        newMaterial.mainTexture = textureAtlas;
+        _newMaterial = new Material(Shader.Find("Standard"));
+        _newMaterial.mainTexture = _textureAtlas;
     }
 
+    /// <summary>
+    /// Applies the new material to the _mesh.
+    /// </summary>
     private void ApplyNewMaterial()
     {
-        meshRenderer.material = newMaterial;
+        _meshRenderer.material = _newMaterial;
     }
 
+    /// <summary>
+    /// Makes a texture readable (editor-only).
+    /// </summary>
+    /// <param name="tex">The texture to make readable.</param>
     private void SetTextureReadable(Texture2D tex)
     {
 #if UNITY_EDITOR
