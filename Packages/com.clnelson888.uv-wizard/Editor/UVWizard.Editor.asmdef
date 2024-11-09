@@ -1,5 +1,6 @@
 {
-    "name": "VRChatPackageTemplate.Editor",
+    "name": "UVWizard.Editor",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [
         "Editor"
