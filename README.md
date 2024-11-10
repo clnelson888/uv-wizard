@@ -1,76 +1,226 @@
-# VPM Package Template
+# UVWizard Project Wiki
 
-Starter for making Packages, including automation for building and publishing them.
+Welcome to the **UVWizard** project wiki! This add-on for Unity aims to simplify the process of combining multiple materials and textures on a 3D model into a single material with a unified texture atlas. This documentation will guide you through how the project works, its current status, future plans, and how you can contribute.
 
-Once you're all set up, you'll be able to push changes to this repository and have .zip and .unitypackage versions automatically generated, and a listing made which works in the VPM for delivering updates for this package. If you want to make a listing with a variety of packages, check out our [template-package-listing](https://github.com/vrchat-community/template-package-listing) repo.
+---
 
-## ▶ Getting Started
+## **Table of Contents**
 
-* Press [![Use This Template](https://user-images.githubusercontent.com/737888/185467681-e5fdb099-d99f-454b-8d9e-0760e5a6e588.png)](https://github.com/vrchat-community/template-package/generate)
-to start a new GitHub project based on this template.
-  * Choose a fitting repository name and description.
-  * Set the visibility to 'Public'. You can also choose 'Private' and change it later.
-  * You don't need to select 'Include all branches.'
-* Clone this repository locally using Git.
-  * If you're unfamiliar with Git and GitHub, [visit GitHub's documentation](https://docs.github.com/en/get-started/quickstart/git-and-github-learning-resources) to learn more.
-* Add the folder to Unity Hub and open it as a Unity Project.
-* After opening the project, wait while the VPM resolver is downloaded and added to your project.
-  * This gives you access to the VPM Package Maker and Package Resolver tools.
+1. [Introduction](#introduction)
+2. [How It Works](#how-it-works)
+3. [Roadmap](#roadmap)
+4. [Current Status](#current-status)
+5. [Documentation](#documentation)
+   - [Software Requirements](#software-requirements)
+   - [Installation Instructions](#installation-instructions)
+   - [Usage Instructions](#usage-instructions)
+6. [Contributing](#contributing)
+7. [License](#license)
 
-## 🚇 Migrating Assets Package
-Full details at [Converting Assets to a VPM Package](https://vcc.docs.vrchat.com/guides/convert-unitypackage)
+---
 
-## ✏️ Working on Your Package
+## **Introduction**
 
-* Delete the "Packages/com.vrchat.demo-template" directory or reuse it for your own package.
-  * If you reuse the package, don't forget to rename it!
-* Update the `.gitignore` file in the "Packages" directory to include your package.
-  * For example, change `!com.vrchat.demo-template` to `!com.username.package-name`.
-  * `.gitignore` files normally *exclude* the contents of your "Packages" directory. This `.gitignore` in this template show how to *include* the demo package. You can easily change this out for your own package name.
-* Open the Unity project and work on your package's files in your favorite code editor.
-* When you're ready, commit and push your changes.
-* Once you've set up the automation as described below, you can easily publish new versions.
+**UVWizard** is a Unity add-on designed to optimize 3D models by:
 
-## 🤖 Setting up the Automation
+- Combining multiple materials into a single material.
+- Repacking UVs to correspond with a new texture atlas.
+- Merging multiple textures into one texture atlas.
 
-Create a repository variable with the name and value described below.
-For details on how to create repository variables, see [Creating Configuration Variables for a Repository](https://docs.github.com/en/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository).
-Make sure you are creating a **repository variable**, and not a **repository secret**.
+This tool is particularly useful for reducing draw calls and improving performance in games and applications that use complex models with multiple materials.
 
-* `PACKAGE_NAME`: the name of your package, like `com.vrchat.demo-template`.
+---
 
-Finally, go to the "Settings" page for your repo, then choose "Pages", and look for the heading "Build and deployment". Change the "Source" dropdown from "Deploy from a branch" to "GitHub Actions".
+## **How It Works**
 
-That's it!
-Some other notes:
-* We highly recommend you keep the existing folder structure of this template.
-  * The root of the project should be a Unity project.
-  * Your packages should be in the "Packages" directory.
-  * If you deviate from this folder structure, you'll need to update the paths that assume your package is in the "Packages" directory on lines 24, 38, 41 and 57.
-* If you want to store and generate your web files in a folder other than "Website" in the root, you can change the `listPublicDirectory` item [here in build-listing.yml](.github/workflows/build-listing.yml#L17).
+The UVWizard script performs the following steps:
 
-## 🎉 Publishing a Release
+1. **Mesh and Material Retrieval**: Accesses the mesh and materials from the selected GameObject.
+2. **UV Repacking**: Adjusts the UV coordinates to fit within designated regions of a new texture atlas.
+3. **Texture Atlas Creation**: Combines individual textures from each material into a single texture atlas.
+4. **Material Creation**: Generates a new material that uses the combined texture atlas.
+5. **Application**: Applies the new UVs and material back to the mesh, replacing the original materials.
 
-You can make a release by running the [Build Release](.github/workflows/release.yml) action. The version specified in your `package.json` file will be used to define the version of the release.
+By automating these steps, UVWizard streamlines the process of optimizing models for better performance.
 
-## 📃 Rebuilding the Listing
+---
 
-Whenever you make a change to a release - manually publishing it, or manually creating, editing or deleting a release, the [Build Repo Listing](.github/workflows/build-listing.yml) action will make a new index of all the releases available, and publish them as a website hosted fore free on [GitHub Pages](https://pages.github.com/). This listing can be used by the VPM to keep your package up to date, and the generated index page can serve as a simple landing page with info for your package. The URL for your package will be in the format `https://username.github.io/repo-name`.
+## **Roadmap**
 
-## 🏠 Customizing the Landing Page (Optional)
+### **Planned Features**
 
-The action which rebuilds the listing also publishes a landing page. The source for this page is in `Website/index.html`. The automation system uses [Scriban](https://github.com/scriban/scriban) to fill in the objects like `{{ this }}` with information from the latest release's manifest, so it will stay up-to-date with the name, id and description that you provide there. You are welcome to modify this page however you want - just use the existing `{{ template.objects }}` to fill in that info wherever you like. The entire contents of your "Website" folder are published to your GitHub Page each time.
+- **Advanced UV Packing Algorithms**: Implement more efficient UV packing techniques to optimize texture space usage.
+- **Support for Additional Texture Maps**: Extend functionality to include normal maps, specular maps, and other material properties.
+- **Editor Extension**: Develop a custom Unity Editor window for a more user-friendly interface.
+- **Runtime Support**: Optimize the script for runtime use, allowing dynamic models to be processed during gameplay.
+- **Error Handling and Logging**: Improve feedback and error messages for better troubleshooting.
 
-## 💻 Technical Stuff
+### **Milestones**
 
-You are welcome to make your own changes to the automation process to make it fit your needs, and you can create Pull Requests if you have some changes you think we should adopt. Here's some more info on the included automation:
+1. **v1.0**: Basic functionality with manual script execution.
+2. **v1.1**: Editor window integration for easier use.
+3. **v2.0**: Advanced UV packing and support for additional texture maps.
+4. **v2.1**: Runtime optimization and enhanced error handling.
 
-### Build Release Action
-[release.yml](/.github/workflows/release.yml)
+---
 
-This is a composite action combining a variety of existing GitHub Actions and some shell commands to create both a .zip of your Package and a .unitypackage. It creates a release which is named for the `version` in the `package.json` file found in your target Package, and publishes the zip, the unitypackage and the package.json file to this release.
+## **Current Status**
 
-### Build Repo Listing
-[build-listing.yml](.github/workflows/build-listing.yml)
+- **Version**: 1.0
+- **Implemented Features**:
+  - Basic UV repacking using a grid layout.
+  - Texture atlas creation using Unity's built-in `PackTextures` method.
+  - Generation of a new material with the combined texture.
+- **Known Issues**:
+  - Limited UV packing efficiency due to simplistic algorithm.
+  - Textures must be readable; non-readable textures require manual adjustment.
+  - Does not currently support additional texture maps (e.g., normals, metallic).
 
-This is a composite action which builds a vpm-compatible [Repo Listing](https://vcc.docs.vrchat.com/vpm/repos) based on the releases you've created. In order to find all your releases and combine them into a listing, it checks out [another repository](https://github.com/vrchat-community/package-list-action) which has a [Nuke](https://nuke.build/) project which includes the VPM core lib to have access to its types and methods. This project will be expanded to include more functionality in the future - for now, the action just calls its `BuildRepoListing` target.
+---
+
+## **Documentation**
+
+### **Software Requirements**
+
+- **Unity Editor**: Version 2022.3.22f1 or higher.
+- **Platform**: Compatible with Windows, macOS, and Linux versions of Unity Editor.
+- **Dependencies**: No external packages required.
+
+### **Installation Instructions**
+
+#### Using VRChat Creator Companion (VCC)
+
+To install UVWizard into your Unity project using the VRChat Creator Companion (VCC) and community packages, follow these steps:
+
+##### Add the UVWizard Repository to VCC
+
+1. **Open the VCC and Go to Settings**:
+   - Launch the VRChat Creator Companion.
+   - Click on the Settings icon in the top-right corner.
+
+2. **Verify VCC Version**:
+   - Ensure you're using VCC version 2.1.0 or newer (the version is displayed in the top-right corner of the Settings page).
+   - If you're not on the latest version, scroll down and click "Check for Updates".
+
+3. **Navigate to the Packages Tab**:
+   - In the Settings page, click on the "Packages" tab.
+
+4. **Add Community Repository**:
+   - Either click this link: [https://clnelson888.github.io/uv-wizard/](https://clnelson888.github.io/uv-wizard/)
+   - **OR** Click the "Add Repository" button.
+   - In the input field that appears, enter the URL of the UVWizard repository: https://clnelson888.github.io/uv-wizard/index.json
+
+- Click "Add".
+
+5. **Confirm Repository Addition**:
+- A popup will appear showing information about the repository and the packages it contains.
+- Review the information to ensure it's correct.
+- Click "I Understand, Add Repository" to confirm.
+
+6. **Verify the Repository is Added**:
+- The repository will now appear in your list of installed repositories.
+- You should see UVWizard listed among the available packages.
+
+##### Add UVWizard Package to Your Project
+
+1. **Navigate to Your Project**:
+- In the VCC, go to the "Projects" tab.
+- Select the Unity project where you want to install UVWizard.
+
+2. **Install the UVWizard Package**:
+- In your project's details page, scroll to the "Packages" section.
+- Find UVWizard in the list of available community packages.
+- Click the "Add" or "Install" button next to UVWizard.
+
+3. **Wait for Installation to Complete**:
+- The VCC will download and install the UVWizard package into your Unity project.
+- Once completed, UVWizard will be available in your project's Packages folder.
+
+##### Open Your Project in Unity
+
+1. Launch Unity Hub.
+2. Open your project, and you should see the UVWizard script and associated assets imported.
+
+### **Usage Instructions**
+
+1. **Prepare Your Model**:
+- Ensure your GameObject has a `MeshFilter` and a `MeshRenderer` component.
+- The model should have multiple materials applied.
+
+2. **Attach the UVWizard Script**:
+- Select the GameObject in the Unity Editor.
+- Click on "Add Component" in the Inspector window.
+- Search for `UVWizard` and add it to the GameObject.
+
+3. **Configure the Script** (Optional):
+- In the Inspector, you can adjust the `Texture Atlas Size` to your preferred resolution (default is 2048).
+
+4. **Execute the Script**:
+- The script can be executed in two ways:
+  - **Automatically on Start**: Uncomment or add the `Start()` method in `UVWizard.cs`:
+    ```csharp
+    private void Start()
+    {
+        CombineMaterials();
+    }
+    ```
+  - **Manually**: Call `CombineMaterials()` from another script or through a custom editor button.
+
+5. **Verify the Result**:
+- After running the script, the GameObject should now have a single material.
+- The mesh UVs will be updated to correspond with the new texture atlas.
+- Check the `Materials` and `Mesh Renderer` components to confirm the changes.
+
+---
+
+## **Contributing**
+
+Contributions are welcome! Here's how you can help:
+
+### **Reporting Issues**
+
+- Use the [Issues](https://github.com/YourUsername/UVWizard/issues) tab to report bugs or suggest enhancements.
+- Provide detailed information, including steps to reproduce the issue and any relevant screenshots.
+
+### **Submitting Pull Requests**
+
+1. **Fork the Repository**:
+- Click on the "Fork" button at the top of the repository page.
+
+2. **Create a Feature Branch**:
+- In your forked repository, create a new branch for your feature or fix:
+  ```bash
+  git checkout -b feature/YourFeatureName
+  ```
+
+3. **Commit Your Changes**:
+- Make your code changes and commit with clear messages:
+  ```bash
+  git commit -m "Add feature XYZ"
+  ```
+
+4. **Push to Your Fork**:
+- Push your changes to your forked repository:
+  ```bash
+  git push origin feature/YourFeatureName
+  ```
+
+5. **Open a Pull Request**:
+- Navigate to the original repository and click on "New Pull Request."
+- Select your feature branch and submit the pull request for review.
+
+### **Coding Guidelines**
+
+- **Follow C# Coding Standards**: Use consistent naming conventions and code formatting.
+- **Comment Your Code**: Provide clear comments and XML documentation where appropriate.
+- **Test Your Changes**: Ensure that your code works as intended and does not break existing functionality.
+
+---
+
+## **License**
+
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software, but please provide attribution to the original author.
+
+---
+
+Thank you for your interest in UVWizard! Your contributions and feedback are invaluable. Together, we can improve this tool to help the Unity community optimize their 3D models more efficiently.
